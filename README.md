@@ -71,22 +71,31 @@ npm run docs:preview
 
 站点内容使用中文，并使用 Teek 主题：Teek 自己的组件（文章信息、阅读时长、文章更新等）为中文。VitePress 默认主题的少量界面文字仍是英文（例如 “On this page”），本项目没有手写主题翻译。
 
-## 部署到 Cloudflare Pages
+## 部署到 Cloudflare Workers
 
-在 Cloudflare Pages 中连接本仓库，使用以下设置：
+仓库已包含 `wrangler.jsonc`，按 Workers 静态资源部署：
 
 | 配置项 | 值 |
 | --- | --- |
-| Root directory | `/`（仓库根目录） |
-| Framework preset | None |
-| Build command | `npm run docs:build` |
-| Build output directory | `docs/.vitepress/dist` |
+| Root directory / 路径 | `/`（仓库根目录） |
+| Build command（构建命令） | `npm run docs:build` |
+| Deploy command（部署命令） | `npx wrangler deploy` |
+| Preview command（预览命令） | `npx wrangler preview` |
 | 环境变量 | `NODE_VERSION=22` |
 
-注意事项：
+`wrangler.jsonc` 的关键配置：
+
+- `assets.directory`：`./docs/.vitepress/dist`
+- `assets.not_found_handling`：`404-page`
+- HTML 路由使用默认的 `auto-trailing-slash`，因此现有的 `cleanUrls` 链接可以直接工作
+
+注意：`wrangler.jsonc` 里的 `name` 是 `cheat-sheet`。如果 Cloudflare 上创建的 Worker 名称不同，请同步修改这个字段，或把 Worker 改成同名。
+
+如果改用 Cloudflare Pages，则不需要 Wrangler：Build command 填 `npm run docs:build`，Build output directory 填 `docs/.vitepress/dist`，Root directory 填 `/`。
+
+## 部署注意事项
 
 - 站点部署在域名根路径，因此不需要设置 `base`。若以后改到子路径，需要在 `docs/.vitepress/config.mts` 中设置 `base` 并重新验证。
-- 已开启 `cleanUrls`，Cloudflare Pages 会把 `/foo.html` 重定向到 `/foo`，无需额外配置。
 - 不要开启 Cloudflare 的 Auto Minify 的 HTML 压缩，它可能删掉 Vue 依赖的注释，导致 hydration 报错。
 
 ## 目录结构

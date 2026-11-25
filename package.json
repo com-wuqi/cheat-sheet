@@ -7,14 +7,17 @@
     "node": ">=20"
   },
   "scripts": {
+    "build": "npm run docs:build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
     "pagefind": "^1.6.0",
     "vitepress": "^1.6.4",
     "vitepress-plugin-pagefind": "^0.4.27",
-    "vitepress-theme-teek": "^1.6.3"
+    "vitepress-theme-teek": "^1.6.3",
+    "wrangler": "^4.168.0"
   }
 }
