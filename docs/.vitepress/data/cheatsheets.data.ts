@@ -5,7 +5,7 @@ export interface CheatSheet {
   url: string
   title: string
   description: string
-  order: number
+  sidebarSort: number
 }
 
 function asText(value: unknown): string | undefined {
@@ -25,15 +25,16 @@ export default createContentLoader('cheat-sheets/**/*.md', {
       .map((page) => {
         const src = page.src ?? ''
         const meta = { ...readFrontmatter(src), ...page.frontmatter }
-        const order = typeof meta.order === 'number' && Number.isFinite(meta.order) ? meta.order : 9999
+        const sidebarSort =
+          typeof meta.sidebarSort === 'number' && Number.isFinite(meta.sidebarSort) ? meta.sidebarSort : 9999
 
         return {
           url: page.url,
           title: asText(meta.title) ?? extractHeading(src) ?? pathToTitle(page.url),
           description: asText(meta.description) ?? extractDescription(src, meta) ?? '',
-          order
+          sidebarSort
         }
       })
-      .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'zh-CN', { numeric: true }))
+      .sort((a, b) => a.sidebarSort - b.sidebarSort || a.title.localeCompare(b.title, 'zh-CN', { numeric: true }))
   }
 })

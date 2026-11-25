@@ -1,7 +1,7 @@
 export interface ContentMeta {
   title?: string
   description?: string
-  order?: number
+  sidebarSort?: number
 }
 
 const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/
@@ -17,15 +17,15 @@ export function readFrontmatter(src: string): ContentMeta {
   const body = match[1]
   const title = readScalar(body, 'title')
   const description = readScalar(body, 'description')
-  const orderText = readScalar(body, 'order')
+  const sortText = readScalar(body, 'sidebarSort')
 
-  let order: number | undefined
-  if (orderText && /^-?\d+(?:\.\d+)?$/.test(orderText)) {
-    const parsed = Number(orderText)
-    if (Number.isFinite(parsed)) order = parsed
+  let sidebarSort: number | undefined
+  if (sortText && /^-?\d+(?:\.\d+)?$/.test(sortText)) {
+    const parsed = Number(sortText)
+    if (Number.isFinite(parsed)) sidebarSort = parsed
   }
 
-  return { title, description, order }
+  return { title, description, sidebarSort }
 }
 
 function readScalar(body: string, key: string): string | undefined {

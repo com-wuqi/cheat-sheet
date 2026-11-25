@@ -1,7 +1,6 @@
 ---
 title: 示例速查
 description: 演示速查表的常见写法，可复制后修改。
-order: 99
 sidebarSort: 99
 ---
 

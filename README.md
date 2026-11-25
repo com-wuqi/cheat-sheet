@@ -25,7 +25,6 @@ npm run docs:dev
 ---
 title: Git 常用命令
 description: 日常提交、分支与回滚命令。
-order: 10
 sidebarSort: 10
 ---
 
@@ -40,11 +39,11 @@ sidebarSort: 10
 | --- | --- |
 | `title` | 侧边栏和索引页标题；缺省时取第一个一级标题，再退化为文件名 |
 | `description` | 索引页上的简短说明 |
-| `order` | 自动索引页排序，数字越小越靠前；缺省为 9999 |
-| `sidebarSort` | Teek 侧边栏排序，数字越小越靠前；缺省为 9999 |
+| `sidebarSort` | 侧边栏与索引页排序，数字越小越靠前；缺省为 9999 |
 | `pagefind-indexed` | 设为 `false` 时不进入搜索索引 |
 
-- 支持在 `docs/cheat-sheets/` 下建子目录分组；子目录里的 `index.md` 会作为分组标题和链接。
+- 支持在 `docs/cheat-sheets/` 下建子目录分组；子目录里的 `index.md` 可用于提供分组标题。
+- 侧边栏由 Teek 自动生成，新增文件后无需改站点配置。
 - 以 `.` 或 `_` 开头的文件/目录不会被收录。
 - **新增或删除文件后需要重启 `npm run docs:dev`**，侧边栏才会更新。
 
