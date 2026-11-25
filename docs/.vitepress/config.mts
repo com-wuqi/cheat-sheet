@@ -1,16 +1,27 @@
-import path from 'node:path'
 import { defineConfig } from 'vitepress'
 import { chineseSearchOptimize, pagefindPlugin } from 'vitepress-plugin-pagefind'
-import { buildSidebar } from './sidebar'
+import { defineTeekConfig } from 'vitepress-theme-teek/config'
 
-const docsDir = path.resolve(process.cwd(), 'docs')
-const cleanUrls = true
+const teekConfig = defineTeekConfig({
+  teekHome: false,
+  vpHome: true,
+  footerInfo: {
+    theme: { show: false },
+    copyright: { show: false }
+  },
+  vitePlugins: {
+    sidebarOption: {
+      ignoreIndexMd: true
+    }
+  }
+})
 
 export default defineConfig({
+  extends: teekConfig,
   lang: 'zh-CN',
   title: '速查表',
   description: '个人速查手册',
-  cleanUrls,
+  cleanUrls: true,
   lastUpdated: true,
   vite: {
     plugins: [
@@ -21,7 +32,6 @@ export default defineConfig({
     ]
   },
   themeConfig: {
-    nav: [{ text: '速查表', link: '/cheat-sheets/' }],
-    sidebar: buildSidebar({ docsDir, cleanUrls })
+    nav: [{ text: '速查表', link: '/cheat-sheets/' }]
   }
 })

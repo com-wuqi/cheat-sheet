@@ -1,6 +1,6 @@
 # 速查表
 
-基于 [VitePress](https://vitepress.dev/) 的个人速查站点。把 Markdown 文件放进 `docs/cheat-sheets/`，侧边栏、索引页和搜索结果会自动更新。
+基于 [VitePress](https://vitepress.dev/) + [Teek](https://github.com/teekhub/vitepress-theme-teek) 主题的个人速查站点。把 Markdown 文件放进 `docs/cheat-sheets/`，侧边栏、索引页和搜索结果会自动更新。
 
 ## 环境要求
 
@@ -26,6 +26,7 @@ npm run docs:dev
 title: Git 常用命令
 description: 日常提交、分支与回滚命令。
 order: 10
+sidebarSort: 10
 ---
 
 # Git 常用命令
@@ -39,7 +40,8 @@ order: 10
 | --- | --- |
 | `title` | 侧边栏和索引页标题；缺省时取第一个一级标题，再退化为文件名 |
 | `description` | 索引页上的简短说明 |
-| `order` | 排序，数字越小越靠前；缺省为 9999 |
+| `order` | 自动索引页排序，数字越小越靠前；缺省为 9999 |
+| `sidebarSort` | Teek 侧边栏排序，数字越小越靠前；缺省为 9999 |
 | `pagefind-indexed` | 设为 `false` 时不进入搜索索引 |
 
 - 支持在 `docs/cheat-sheets/` 下建子目录分组；子目录里的 `index.md` 会作为分组标题和链接。
@@ -68,9 +70,7 @@ npm run docs:preview
 
 ## 界面语言
 
-站点内容使用中文，但默认主题的界面文字保持 VitePress 默认的英文（例如 “On this page”“Previous page”）。本项目没有手写主题翻译，也没有改默认主题源码。
-
-如果以后需要全中文的主题 UI，建议评估自带中文界面的外置主题，而不是自行覆盖文案。
+站点内容使用中文，并使用 Teek 主题：Teek 自己的组件（文章信息、阅读时长、文章更新等）为中文。VitePress 默认主题的少量界面文字仍是英文（例如 “On this page”），本项目没有手写主题翻译。
 
 ## 部署到 Cloudflare Pages
 
@@ -99,8 +99,9 @@ docs/
 │  ├─ index.md                  # 自动索引页
 │  └─ example.md                # 示例速查，可删除
 └─ .vitepress/
-   ├─ config.mts                # 站点配置
-   ├─ sidebar.ts                # 自动侧边栏生成
+   ├─ config.mts                # 站点配置（Teek + Pagefind）
+   ├─ theme/
+   │  └─ index.ts               # 引入 Teek 主题
    ├─ content.ts                # 标题/描述/frontmatter 解析
    └─ data/
       └─ cheatsheets.data.ts    # 索引页数据加载器
