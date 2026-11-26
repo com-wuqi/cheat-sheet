@@ -10,237 +10,237 @@ sidebarSort: 23
 
 ## kubectl 基础
 
-### Configuration
+### 配置
 ```bash
-# View current context
+# 查看当前上下文
 kubectl config current-context
 
-# List all contexts
+# 列出所有上下文
 kubectl config get-contexts
 
-# Switch context
+# 切换上下文
 kubectl config use-context <context-name>
 
-# View cluster info
+# 查看集群信息
 kubectl cluster-info
 
-# View kubectl configuration
+# 查看 kubectl 配置
 kubectl config view
 
-# Set default namespace
+# 设置默认 Namespace
 kubectl config set-context --current --namespace=<namespace>
 ```
 
-### Getting Help
+### 获取帮助
 ```bash
-# General help
+# 通用帮助
 kubectl --help
 
-# Help for specific command
+# 指定命令的帮助
 kubectl get --help
 
-# Explain resource
+# 解释资源字段
 kubectl explain pod
 kubectl explain pod.spec
 kubectl explain pod.spec.containers
 ```
 
-### Basic Commands
+### 基础命令
 ```bash
-# Get resources
+# 获取资源
 kubectl get <resource>
 kubectl get pods
 kubectl get deployments
 kubectl get services
 kubectl get all
 
-# Describe resource (detailed info)
+# 查看资源详细信息
 kubectl describe <resource> <name>
 kubectl describe pod my-pod
 
-# Create resource from file
+# 从文件创建资源
 kubectl apply -f <file.yaml>
 kubectl create -f <file.yaml>
 
-# Delete resource
+# 删除资源
 kubectl delete <resource> <name>
 kubectl delete -f <file.yaml>
 
-# Edit resource
+# 编辑资源
 kubectl edit <resource> <name>
 ```
 
 
-## Resource Management
+## 资源管理
 
-### Viewing Resources
+### 查看资源
 
-#### Get Resources
+#### 获取资源
 ```bash
-# List all pods
+# 列出所有 Pod
 kubectl get pods
-kubectl get po  # shorthand
+kubectl get po  # 简写
 
-# List with more details
+# 查看更详细的信息
 kubectl get pods -o wide
 
-# List in all namespaces
+# 列出所有 Namespace 中的资源
 kubectl get pods --all-namespaces
-kubectl get pods -A  # shorthand
+kubectl get pods -A  # 简写
 
-# List specific namespace
+# 列出指定 Namespace 中的资源
 kubectl get pods -n <namespace>
 
-# Output formats
+# 输出格式
 kubectl get pods -o yaml
 kubectl get pods -o json
 kubectl get pods -o name
 kubectl get pods -o custom-columns=NAME:.metadata.name,STATUS:.status.phase
 ```
 
-#### Watch Resources
+#### 监视资源
 ```bash
-# Watch for changes
+# 监视变更
 kubectl get pods --watch
-kubectl get pods -w  # shorthand
+kubectl get pods -w  # 简写
 
-# Watch all resources
+# 监视所有资源
 kubectl get all -w
 ```
 
-#### Filtering
+#### 过滤
 ```bash
-# Filter by label
+# 按标签过滤
 kubectl get pods -l app=myapp
 kubectl get pods --selector app=myapp
 
-# Filter by field
+# 按字段过滤
 kubectl get pods --field-selector status.phase=Running
 
-# Multiple filters
+# 多个过滤条件
 kubectl get pods -l app=myapp,env=prod
 ```
 
-### Creating Resources
+### 创建资源
 
-#### Imperative Commands
+#### 命令式命令
 ```bash
-# Create pod
+# 创建 Pod
 kubectl run nginx --image=nginx
 
-# Create deployment
+# 创建 Deployment
 kubectl create deployment nginx --image=nginx
 
-# Create service
+# 创建 Service
 kubectl expose deployment nginx --port=80 --type=NodePort
 
-# Create from file
+# 从文件创建
 kubectl create -f deployment.yaml
 ```
 
-#### Declarative Commands
+#### 声明式命令
 ```bash
-# Apply configuration (create or update)
+# 应用配置（创建或更新）
 kubectl apply -f deployment.yaml
 kubectl apply -f ./configs/
 
-# Apply with recursion
+# 递归应用
 kubectl apply -f ./configs/ -R
 ```
 
-### Updating Resources
+### 更新资源
 ```bash
-# Set image
+# 设置镜像
 kubectl set image deployment/nginx nginx=nginx:1.19
 
-# Scale deployment
+# 扩缩容 Deployment
 kubectl scale deployment nginx --replicas=3
 
-# Autoscale
+# 自动扩缩容
 kubectl autoscale deployment nginx --min=2 --max=10 --cpu-percent=80
 
-# Edit resource
+# 编辑资源
 kubectl edit deployment nginx
 
-# Patch resource
+# 使用 patch 更新资源
 kubectl patch deployment nginx -p '{"spec":{"replicas":5}}'
 ```
 
-### Deleting Resources
+### 删除资源
 ```bash
-# Delete pod
+# 删除 Pod
 kubectl delete pod nginx
 
-# Delete deployment
+# 删除 Deployment
 kubectl delete deployment nginx
 
-# Delete from file
+# 从文件删除
 kubectl delete -f deployment.yaml
 
-# Delete by label
+# 按标签删除
 kubectl delete pods -l app=myapp
 
-# Force delete
+# 强制删除
 kubectl delete pod nginx --force --grace-period=0  # 谨慎：跳过优雅终止
 
-# Delete all pods in namespace
+# 删除 Namespace 中的所有 Pod
 kubectl delete pods --all -n <namespace>
 ```
 
 
-## Pods
+## Pod
 
-### Pod Operations
+### Pod 操作
 ```bash
-# List pods
+# 列出 Pod
 kubectl get pods
 
-# Describe pod
+# 查看 Pod 详细信息
 kubectl describe pod <pod-name>
 
-# Get pod logs
+# 获取 Pod 日志
 kubectl logs <pod-name>
-kubectl logs <pod-name> -f  # follow
-kubectl logs <pod-name> --tail=100  # last 100 lines
-kubectl logs <pod-name> -c <container-name>  # specific container
-kubectl logs <pod-name> --previous  # previous instance
+kubectl logs <pod-name> -f  # 持续输出
+kubectl logs <pod-name> --tail=100  # 最后 100 行
+kubectl logs <pod-name> -c <container-name>  # 指定容器
+kubectl logs <pod-name> --previous  # 上一个实例
 
-# Execute command in pod
+# 在 Pod 中执行命令
 kubectl exec <pod-name> -- <command>
-kubectl exec -it <pod-name> -- bash  # interactive bash
-kubectl exec -it <pod-name> -c <container> -- bash  # specific container
+kubectl exec -it <pod-name> -- bash  # 交互式 bash
+kubectl exec -it <pod-name> -c <container> -- bash  # 指定容器
 
-# Port forwarding
+# 端口转发
 kubectl port-forward <pod-name> 8080:80
 
-# Copy files
+# 复制文件
 kubectl cp <pod-name>:/path/in/pod /local/path
 kubectl cp /local/path <pod-name>:/path/in/pod
 
-# Top (resource usage)
+# 资源用量（top）
 kubectl top pod <pod-name>
 kubectl top pods --all-namespaces
 ```
 
-### Pod Debugging
+### Pod 调试
 ```bash
-# Get pod YAML
+# 获取 Pod 的 YAML
 kubectl get pod <pod-name> -o yaml
 
-# Get events
+# 获取事件
 kubectl get events --sort-by=.metadata.creationTimestamp
 
-# Describe for troubleshooting
+# 排查问题时查看详细信息
 kubectl describe pod <pod-name>
 
-# Check pod status
+# 检查 Pod 状态
 kubectl get pod <pod-name> -o jsonpath='{.status.phase}'
 
-# Check container statuses
+# 检查容器状态
 kubectl get pod <pod-name> -o jsonpath='{.status.containerStatuses[*].state}'
 ```
 
-### Pod YAML Example
+### Pod YAML 示例
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -267,52 +267,52 @@ spec:
 ```
 
 
-## Deployments
+## Deployment
 
-### Deployment Operations
+### Deployment 操作
 ```bash
-# Create deployment
+# 创建 Deployment
 kubectl create deployment nginx --image=nginx:1.19
 
-# List deployments
+# 列出 Deployment
 kubectl get deployments
-kubectl get deploy  # shorthand
+kubectl get deploy  # 简写
 
-# Describe deployment
+# 查看 Deployment 详细信息
 kubectl describe deployment nginx
 
-# Scale deployment
+# 扩缩容 Deployment
 kubectl scale deployment nginx --replicas=5
 
-# Autoscale
+# 自动扩缩容
 kubectl autoscale deployment nginx --min=2 --max=10 --cpu-percent=80
 
-# Update image
+# 更新镜像
 kubectl set image deployment/nginx nginx=nginx:1.20
 
-# Check rollout status
+# 检查滚动更新状态
 kubectl rollout status deployment/nginx
 
-# View rollout history
+# 查看发布历史
 kubectl rollout history deployment/nginx
 
-# Rollback to previous version
+# 回滚到上一版本
 kubectl rollout undo deployment/nginx
 
-# Rollback to specific revision
+# 回滚到指定版本
 kubectl rollout undo deployment/nginx --to-revision=2
 
-# Pause rollout
+# 暂停发布
 kubectl rollout pause deployment/nginx
 
-# Resume rollout
+# 恢复发布
 kubectl rollout resume deployment/nginx
 
-# Restart deployment (recreate pods)
+# 重启 Deployment（重建 Pod）
 kubectl rollout restart deployment/nginx
 ```
 
-### Deployment YAML Example
+### Deployment YAML 示例
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -362,30 +362,30 @@ spec:
 ```
 
 
-## Services
+## Service
 
-### Service Operations
+### Service 操作
 ```bash
-# List services
+# 列出 Service
 kubectl get services
-kubectl get svc  # shorthand
+kubectl get svc  # 简写
 
-# Describe service
+# 查看 Service 详细信息
 kubectl describe service nginx
 
-# Create service from deployment
+# 从 Deployment 创建 Service
 kubectl expose deployment nginx --port=80 --type=NodePort
 
-# Get service endpoint
+# 获取 Service 端点
 kubectl get endpoints nginx
 
-# Delete service
+# 删除 Service
 kubectl delete service nginx
 ```
 
-### Service Types
+### Service 类型
 
-#### ClusterIP (default)
+#### ClusterIP（默认）
 ```yaml
 apiVersion: v1
 kind: Service
@@ -413,7 +413,7 @@ spec:
   ports:
   - port: 80
     targetPort: 80
-    nodePort: 30080  # optional, will auto-assign if omitted
+    nodePort: 30080  # 可选，省略时自动分配
 ```
 
 #### LoadBalancer
@@ -432,24 +432,24 @@ spec:
 ```
 
 
-## ConfigMaps and Secrets
+## ConfigMap 与 Secret
 
-### ConfigMaps
+### ConfigMap
 
-#### Create ConfigMap
+#### 创建 ConfigMap
 ```bash
-# From literal values
+# 从字面量值创建
 kubectl create configmap app-config \
   --from-literal=ENV=production \
   --from-literal=DEBUG=false
 
-# From file
+# 从文件创建
 kubectl create configmap app-config --from-file=config.properties
 
-# From directory
+# 从目录创建
 kubectl create configmap app-config --from-file=./configs/
 
-# From YAML
+# 从 YAML 创建
 kubectl apply -f configmap.yaml
 ```
 
@@ -467,24 +467,24 @@ data:
     property2=value2
 ```
 
-#### Use ConfigMap in Pod
+#### 在 Pod 中使用 ConfigMap
 ```yaml
 spec:
   containers:
   - name: app
     image: myapp
-    # Environment variables from ConfigMap
+    # 从 ConfigMap 注入环境变量
     env:
     - name: ENV
       valueFrom:
         configMapKeyRef:
           name: app-config
           key: ENV
-    # All keys as env vars
+    # 将所有键作为环境变量注入
     envFrom:
     - configMapRef:
         name: app-config
-    # Mount as volume
+    # 挂载为卷
     volumeMounts:
     - name: config-volume
       mountPath: /etc/config
@@ -494,24 +494,24 @@ spec:
       name: app-config
 ```
 
-### Secrets
+### Secret
 
-#### Create Secret
+#### 创建 Secret
 ```bash
-# From literal values
+# 从字面量值创建
 kubectl create secret generic db-secret \
   --from-literal=username=admin \
   --from-literal=password=secret123
 
-# From file
+# 从文件创建
 kubectl create secret generic db-secret --from-file=./secret.txt
 
-# TLS secret
+# TLS Secret
 kubectl create secret tls tls-secret \
   --cert=path/to/cert.crt \
   --key=path/to/key.key
 
-# Docker registry secret
+# Docker 仓库认证 Secret
 kubectl create secret docker-registry regcred \
   --docker-server=<registry> \
   --docker-username=<username> \
@@ -526,21 +526,21 @@ metadata:
   name: db-secret
 type: Opaque
 data:
-  # Values must be base64 encoded
+  # 值必须为 base64 编码
   username: YWRtaW4=  # admin
   password: c2VjcmV0MTIz  # secret123
 ```
 
-#### Encode/Decode Base64
+#### Base64 编码/解码
 ```bash
-# Encode
+# 编码
 echo -n "secret123" | base64
 
-# Decode
+# 解码
 echo "c2VjcmV0MTIz" | base64 --decode
 ```
 
-#### Use Secret in Pod
+#### 在 Pod 中使用 Secret
 ```yaml
 spec:
   containers:
@@ -566,24 +566,24 @@ spec:
 ```
 
 
-## Namespaces
+## Namespace
 
-### Namespace Operations
+### Namespace 操作
 ```bash
-# List namespaces
+# 列出 Namespace
 kubectl get namespaces
-kubectl get ns  # shorthand
+kubectl get ns  # 简写
 
-# Create namespace
+# 创建 Namespace
 kubectl create namespace dev
 
-# Delete namespace
+# 删除 Namespace
 kubectl delete namespace dev
 
-# Get resources in namespace
+# 获取 Namespace 中的资源
 kubectl get pods -n dev
 
-# Set default namespace
+# 设置默认 Namespace
 kubectl config set-context --current --namespace=dev
 ```
 
@@ -597,7 +597,7 @@ metadata:
     environment: development
 ```
 
-### Resource Quotas
+### 资源配额
 ```yaml
 apiVersion: v1
 kind: ResourceQuota
@@ -614,96 +614,96 @@ spec:
 ```
 
 
-## Troubleshooting
+## 故障排查
 
-### Debugging Commands
+### 调试命令
 
-#### Pod Issues
+#### Pod 问题
 ```bash
-# Check pod status
+# 检查 Pod 状态
 kubectl get pods
 kubectl describe pod <pod-name>
 
-# View logs
+# 查看日志
 kubectl logs <pod-name>
-kubectl logs <pod-name> --previous  # previous container
+kubectl logs <pod-name> --previous  # 上一个容器
 
-# Events
+# 事件
 kubectl get events --sort-by=.metadata.creationTimestamp
 kubectl get events -n <namespace>
 
-# Pod shell access
+# 进入 Pod shell
 kubectl exec -it <pod-name> -- sh
 kubectl exec -it <pod-name> -- bash
 
-# Check resource usage
+# 检查资源用量
 kubectl top pod <pod-name>
 kubectl top node
 ```
 
-#### Network Issues
+#### 网络问题
 ```bash
-# Check service endpoints
+# 检查 Service 端点
 kubectl get endpoints <service-name>
 
-# Describe service
+# 查看 Service 详细信息
 kubectl describe service <service-name>
 
-# Port forward for testing
+# 端口转发用于测试
 kubectl port-forward <pod-name> 8080:80
 
-# Test connectivity from pod
+# 从 Pod 内测试连通性
 kubectl exec -it <pod-name> -- wget -qO- http://service-name
 kubectl exec -it <pod-name> -- curl service-name
 ```
 
-#### Resource Issues
+#### 资源问题
 ```bash
-# Check node resources
+# 检查节点资源
 kubectl describe node <node-name>
 kubectl top nodes
 
-# Check pod resource usage
+# 检查 Pod 资源用量
 kubectl top pods
 
-# Check resource quotas
+# 检查资源配额
 kubectl describe resourcequota -n <namespace>
 ```
 
-### Common Pod States
+### 常见 Pod 状态
 
-**Pending**: Waiting to be scheduled
+**Pending**：等待调度
 ```bash
-# Check node resources
+# 检查节点资源
 kubectl describe node
-# Check events
+# 检查事件
 kubectl describe pod <pod-name>
 ```
 
-**ImagePullBackOff**: Can't pull container image
+**ImagePullBackOff**：无法拉取容器镜像
 ```bash
-# Check image name and credentials
+# 检查镜像名称和凭据
 kubectl describe pod <pod-name>
 ```
 
-**CrashLoopBackOff**: Container keeps crashing
+**CrashLoopBackOff**：容器持续崩溃
 ```bash
-# Check logs
+# 查看日志
 kubectl logs <pod-name>
 kubectl logs <pod-name> --previous
 ```
 
-**Error**: Container exited with error
+**Error**：容器异常退出
 ```bash
-# Check logs and describe
+# 查看日志和详细信息
 kubectl logs <pod-name>
 kubectl describe pod <pod-name>
 ```
 
 
-## YAML Templates
+## YAML 模板
 
-### Complete Deployment Example
+### 完整的 Deployment 示例
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -827,36 +827,36 @@ spec:
 ```
 
 
-## Quick Reference
+## 快速参考
 
-### Most Common Commands
+### 最常用的命令
 ```bash
-# View resources
+# 查看资源
 kubectl get pods
 kubectl get deployments
 kubectl get services
 kubectl get all
 
-# Describe (detailed info)
+# 查看详细信息
 kubectl describe pod <name>
 
-# Logs
+# 日志
 kubectl logs -f <pod-name>
 
-# Execute command
+# 执行命令
 kubectl exec -it <pod-name> -- bash
 
-# Apply configuration
+# 应用配置
 kubectl apply -f <file.yaml>
 
-# Scale
+# 扩缩容
 kubectl scale deployment <name> --replicas=3
 
-# Port forward
+# 端口转发
 kubectl port-forward <pod-name> 8080:80
 ```
 
-### Resource Shortnames
+### 资源简称
 ```bash
 po = pods
 deploy = deployments
@@ -870,9 +870,9 @@ sa = serviceaccounts
 ```
 
 
-## Useful Aliases
+## 常用别名
 
-Add these to your `~/.bashrc` or `~/.zshrc`:
+将以下内容加入 `~/.bashrc` 或 `~/.zshrc`：
 
 ```bash
 alias k='kubectl'
@@ -884,20 +884,20 @@ alias kex='kubectl exec -it'
 alias kaf='kubectl apply -f'
 alias kdf='kubectl delete -f'
 
-# With watch
+# 带监视
 alias kgpw='kubectl get pods -w'
 alias kgdw='kubectl get deployments -w'
 
-# All namespaces
+# 所有 Namespace
 alias kgpa='kubectl get pods --all-namespaces'
 alias kgda='kubectl get deployments --all-namespaces'
 ```
 
 
-## Additional Resources
+## 其他资源
 
-- [Official Kubernetes Documentation](https://kubernetes.io/docs/)
-- [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+- [Kubernetes 官方文档](https://kubernetes.io/docs/)
+- [kubectl 速查表](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 - [Play with Kubernetes](https://labs.play-with-k8s.com/)
 - [Kubernetes the Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
 

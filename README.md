@@ -43,7 +43,7 @@ docs/cheat-sheets/
 ```
 
 - 分组目录的 `index.md` 只提供侧边栏分组标题和简介；Teek 的 `ignoreIndexMd` 会把它排除在侧边栏条目之外，`pagefind-indexed: false` 则让它不进入搜索结果。
-- 正文语言尽量沿用原始资料：Bash、Vim、Git、Go、FFmpeg、ADB 为中文；Docker、Kubernetes、Linux、Python、SQL 保留英文原文。页面标题和描述为中文。
+- 除命令、代码、配置键、专有名词和外部链接外，正文统一使用中文。
 - `docs-raw/` 是本地原始素材，已加入 `.gitignore`，不参与构建。
 
 ## 添加速查
@@ -108,7 +108,7 @@ npm run docs:preview
 
 - Bash、Vim、ADB、FFmpeg 和 Git 中文内容整理自 [skywind3000/awesome-cheatsheets](https://github.com/skywind3000/awesome-cheatsheets)（MIT License）。许可文本见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 - Go 内容整理自 [a8m/golang-cheat-sheet](https://github.com/a8m/golang-cheat-sheet) 的中文翻译版本。
-- Docker、Kubernetes、Linux、Python、SQL 页面来自本地英文资料，原始出处未标注；命令请以官方文档为准。
+- Docker、Kubernetes、Linux、Python、SQL 页面来自本地英文资料，整理时已翻译为中文；原始出处未标注，命令请以官方文档为准。
 
 ## 部署到 Cloudflare Workers
 

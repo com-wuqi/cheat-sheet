@@ -8,33 +8,33 @@ sidebarSort: 31
 
 日常开发中高频使用的 Python 写法与工具链。示例以 Python 3.10+ 为主。
 
-## Environments and Packaging
+## 环境与依赖
 
 ```bash
-# Create and activate a virtual environment
+# 创建并激活虚拟环境
 python -m venv .venv
 source .venv/bin/activate           # macOS/Linux
 .venv\Scripts\activate              # Windows
 
-# Pin versions for reproducible installs
+# 锁定版本，让安装可复现
 pip install -r requirements.txt
 pip freeze > requirements.txt
 
-# Modern alternative: uv (10-100x faster pip)
+# 现代替代方案：uv（比 pip 快 10-100 倍）
 uv venv
 uv pip install -r requirements.txt
 uv pip compile requirements.in -o requirements.txt
 ```
 
-| Tool | Use |
+| 工具 | 用途 |
 |---|---|
-| `pip` + `venv` | Standard, comes with Python |
-| `uv` | Drop-in replacement, much faster |
-| `poetry` | Dependency resolution + packaging, opinionated |
-| `pip-tools` | Compile `requirements.in` → pinned `requirements.txt` |
-| `conda` | When you need non-Python deps (CUDA, MKL) bundled |
+| `pip` + `venv` | 标准方案，随 Python 自带 |
+| `uv` | 可直接替换 pip，速度快得多 |
+| `poetry` | 依赖解析 + 打包，约定性强 |
+| `pip-tools` | 把 `requirements.in` 编译成锁定版本的 `requirements.txt` |
+| `conda` | 需要捆绑非 Python 依赖（CUDA、MKL）时使用 |
 
-## Type Hints
+## 类型标注
 
 ```python
 from typing import Optional
@@ -46,20 +46,20 @@ def predict(features: list[float], model_version: str = "latest") -> float:
 def fetch(urls: Iterable[str]) -> Mapping[str, bytes]:
     ...
 
-def lookup(user_id: int) -> Optional[dict]:  # or: dict | None  (3.10+)
+def lookup(user_id: int) -> Optional[dict]:  # 或：dict | None（3.10+）
     ...
 ```
 
-Run `mypy` or `pyright` in CI. Treat type errors like compile errors.
+在 CI 中运行 `mypy` 或 `pyright`。把类型错误当作编译错误来对待。
 
-## Logging (Not print)
+## 日志（而不是 print）
 
 ```python
 import logging
 logger = logging.getLogger(__name__)
 logger.info("Loaded model", extra={"model_version": "v3", "size_mb": 42})
 
-# Structured logging in JSON
+# JSON 结构化日志
 import json, logging.config
 logging.config.dictConfig({
     "version": 1,
@@ -72,25 +72,25 @@ logging.config.dictConfig({
 })
 ```
 
-Levels: `DEBUG < INFO < WARNING < ERROR < CRITICAL`.
+日志级别：`DEBUG < INFO < WARNING < ERROR < CRITICAL`。
 
-## Error Handling
+## 异常处理
 
 ```python
 try:
     result = risky()
 except (TimeoutError, ConnectionError) as exc:
     logger.warning("transient", exc_info=exc)
-    raise                       # re-raise, preserve traceback
+    raise                       # 重新抛出，保留 traceback
 except ValueError as exc:
-    raise InvalidInput(str(exc)) from exc   # chain
+    raise InvalidInput(str(exc)) from exc   # 链式关联
 finally:
     cleanup()
 ```
 
-Don't bare-`except`. Don't catch `Exception` unless you're at the top-level boundary.
+不要写裸 `except`。除非处在上层边界，否则不要捕获 `Exception`。
 
-## File I/O and Paths
+## 文件与路径
 
 ```python
 from pathlib import Path
@@ -99,11 +99,11 @@ p = Path("/data/raw") / "events.json"
 text = p.read_text()
 data = json.loads(text)
 
-# Iterate
+# 遍历
 for child in Path(".").rglob("*.parquet"):
     print(child)
 
-# Write atomically
+# 原子写入
 tmp = p.with_suffix(".tmp")
 tmp.write_text(payload)
 tmp.replace(p)
@@ -115,13 +115,13 @@ tmp.replace(p)
 import json, yaml
 
 data = json.loads(text)
-text = json.dumps(data, indent=2, default=str)   # default=str handles datetimes
+text = json.dumps(data, indent=2, default=str)   # default=str 可处理 datetime
 
 with open("config.yaml") as f:
-    cfg = yaml.safe_load(f)                       # always safe_load, never load
+    cfg = yaml.safe_load(f)                       # 始终用 safe_load，不要用 load
 ```
 
-## Subprocess (When You Must Shell Out)
+## 子进程（必须调用外部命令时）
 
 ```python
 import subprocess
@@ -132,9 +132,9 @@ res = subprocess.run(
 pods = json.loads(res.stdout)
 ```
 
-`check=True` raises on non-zero exit. Always set `timeout`. Never pass `shell=True` with user input.
+`check=True` 会在退出码非零时抛出异常。始终设置 `timeout`。绝不要把用户输入和 `shell=True` 一起使用。
 
-## CLI with argparse
+## 用 argparse 写命令行
 
 ```python
 import argparse
@@ -145,9 +145,9 @@ parser.add_argument("-v", "--verbose", action="store_true")
 args = parser.parse_args()
 ```
 
-For larger CLIs: `click` or `typer`.
+更复杂的命令行工具：用 `click` 或 `typer`。
 
-## HTTP with requests
+## 用 requests 发 HTTP 请求
 
 ```python
 import requests
@@ -156,15 +156,15 @@ resp = requests.post(
     "https://api.example.com/predict",
     json={"features": [...]},
     headers={"Authorization": f"Bearer {token}"},
-    timeout=(3.0, 10.0),    # (connect, read)
+    timeout=(3.0, 10.0),    # （连接超时, 读取超时）
 )
 resp.raise_for_status()
 data = resp.json()
 ```
 
-Always set a timeout. Always `raise_for_status()` or check `resp.ok`.
+始终设置超时。始终调用 `raise_for_status()` 或检查 `resp.ok`。
 
-## Async with asyncio
+## 用 asyncio 写异步
 
 ```python
 import asyncio, httpx
@@ -180,16 +180,16 @@ async def main():
 asyncio.run(main())
 ```
 
-## Concurrency Cheats
+## 并发速查
 
-| Workload | Tool |
+| 负载类型 | 工具 |
 |---|---|
-| I/O-bound, many tasks | `asyncio` |
-| I/O-bound, few tasks, simple | `concurrent.futures.ThreadPoolExecutor` |
-| CPU-bound | `concurrent.futures.ProcessPoolExecutor` |
-| Mixed | Separate process pool from event loop with `loop.run_in_executor` |
+| I/O 密集型，任务很多 | `asyncio` |
+| I/O 密集型，任务较少且逻辑简单 | `concurrent.futures.ThreadPoolExecutor` |
+| CPU 密集型 | `concurrent.futures.ProcessPoolExecutor` |
+| 混合型 | 用 `loop.run_in_executor` 把进程池和事件循环分开 |
 
-## Testing with pytest
+## 用 pytest 做测试
 
 ```python
 import pytest
@@ -208,25 +208,25 @@ def client():
         yield c
 ```
 
-Run: `pytest -v --cov=src --cov-report=term-missing`
+运行：`pytest -v --cov=src --cov-report=term-missing`
 
-## Tooling
+## 工具链
 
-| Tool | Purpose |
+| 工具 | 用途 |
 |---|---|
-| `black` | Auto-formatter (no config debates) |
-| `ruff` | Fast linter + formatter (replaces flake8, isort, pyupgrade) |
-| `mypy` / `pyright` | Static type checking |
-| `pytest` | Test runner |
-| `pytest-cov` | Coverage |
-| `pre-commit` | Run formatters/linters on commit |
-| `bandit` | Security scanner |
+| `black` | 自动格式化（不用再争论配置） |
+| `ruff` | 快速的 linter + 格式化工具（可替代 flake8、isort、pyupgrade） |
+| `mypy` / `pyright` | 静态类型检查 |
+| `pytest` | 测试运行器 |
+| `pytest-cov` | 覆盖率 |
+| `pre-commit` | 提交时自动运行格式化/linter |
+| `bandit` | 安全扫描 |
 
-## Standard Project Layout
+## 标准项目结构
 
 ```
 myproject/
-├── pyproject.toml         # project metadata + tool config
+├── pyproject.toml         # 项目元数据 + 工具配置
 ├── src/
 │   └── mypackage/
 │       ├── __init__.py
@@ -237,35 +237,35 @@ myproject/
 └── README.md
 ```
 
-`src/`-layout prevents accidental imports from the working directory.
+`src/` 布局可以避免从工作目录意外导入模块。
 
-## Common Gotchas
+## 常见陷阱
 
-- **Mutable default argument.** Don't write `def f(x=[]):` — use `def f(x=None): x = x or []`.
-- **Late binding closures.** `[lambda: i for i in range(3)]` — all lambdas return `2`. Use `lambda i=i: i`.
-- **`is` vs `==`.** `is` is identity. Only use `is None`, `is True`, `is False`.
-- **Floating point.** `0.1 + 0.2 != 0.3`. Use `math.isclose` or `decimal.Decimal` for currency.
-- **GIL.** Threads do not parallelize CPU work in CPython. Use processes.
-- **`__init__.py` ordering.** Don't put side-effecting code in package init.
+- **可变默认参数。** 不要写 `def f(x=[]):` — 改用 `def f(x=None): x = x or []`。
+- **闭包晚绑定。** `[lambda: i for i in range(3)]` — 所有 lambda 都返回 `2`。要写成 `lambda i=i: i`。
+- **`is` 与 `==`。** `is` 判断的是同一性。只对 `is None`、`is True`、`is False` 使用。
+- **浮点数。** `0.1 + 0.2 != 0.3`。货币计算请用 `math.isclose` 或 `decimal.Decimal`。
+- **GIL。** 在 CPython 中线程无法并行执行 CPU 任务。CPU 任务请用多进程。
+- **`__init__.py` 中的顺序问题。** 不要在包的初始化代码里放有副作用的代码。
 
-## Useful Stdlib Modules
+## 常用标准库模块
 
-| Module | Use |
+| 模块 | 用途 |
 |---|---|
-| `pathlib` | Filesystem paths |
-| `dataclasses` | Simple data classes |
-| `enum` | Named constants |
-| `collections` | `Counter`, `defaultdict`, `deque` |
-| `itertools` | `chain`, `groupby`, `product`, `islice` |
-| `functools` | `lru_cache`, `partial`, `reduce` |
-| `contextlib` | `contextmanager`, `suppress`, `ExitStack` |
-| `concurrent.futures` | Pool-based parallelism |
-| `secrets` | Cryptographic randomness |
-| `uuid` | Unique IDs |
-| `datetime` + `zoneinfo` | Time-aware datetimes |
+| `pathlib` | 文件系统路径 |
+| `dataclasses` | 简单的数据类 |
+| `enum` | 具名常量 |
+| `collections` | `Counter`、`defaultdict`、`deque` |
+| `itertools` | `chain`、`groupby`、`product`、`islice` |
+| `functools` | `lru_cache`、`partial`、`reduce` |
+| `contextlib` | `contextmanager`、`suppress`、`ExitStack` |
+| `concurrent.futures` | 基于线程/进程池的并行 |
+| `secrets` | 密码学安全的随机数 |
+| `uuid` | 唯一 ID |
+| `datetime` + `zoneinfo` | 带时区的日期时间 |
 
-## See Also
+## 另见
 
-- [Real Python](https://realpython.com/) — high-quality tutorials
-- [Python type checking guide](https://mypy.readthedocs.io/)
-- [The pytest docs](https://docs.pytest.org/)
+- [Real Python](https://realpython.com/) — 高质量教程
+- [Python 类型检查指南](https://mypy.readthedocs.io/)
+- [pytest 官方文档](https://docs.pytest.org/)

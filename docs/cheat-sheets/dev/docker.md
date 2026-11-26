@@ -10,252 +10,252 @@ sidebarSort: 22
 
 ## 基础命令
 
-### Version and Info
+### 版本与信息
 ```bash
-# Check Docker version
+# 查看 Docker 版本
 docker --version
-docker version  # detailed version info
+docker version  # 详细版本信息
 
-# Display system-wide information
+# 查看系统级信息
 docker info
 
-# Get help
+# 获取帮助
 docker --help
 docker <command> --help
 ```
 
-### Images
+### 镜像
 ```bash
-# List images
+# 列出镜像
 docker images
 docker image ls
 
-# Pull an image
+# 拉取镜像
 docker pull <image>:<tag>
 docker pull python:3.9
 
-# Remove an image
+# 删除镜像
 docker rmi <image-id>
 docker image rm <image-id>
 
-# Remove unused images
+# 删除未使用的镜像
 docker image prune
-docker image prune -a  # remove all unused images
+docker image prune -a  # 删除所有未使用的镜像
 ```
 
-### Containers
+### 容器
 ```bash
-# List running containers
+# 列出运行中的容器
 docker ps
 docker container ls
 
-# List all containers (including stopped)
+# 列出所有容器（包括已停止的）
 docker ps -a
 docker container ls -a
 
-# Run a container
+# 运行容器
 docker run <image>
-docker run -d <image>  # detached mode
-docker run -it <image> bash  # interactive with bash
+docker run -d <image>  # 分离模式
+docker run -it <image> bash  # 交互式 bash
 
-# Stop a container
+# 停止容器
 docker stop <container-id>
 
-# Start a stopped container
+# 启动已停止的容器
 docker start <container-id>
 
-# Remove a container
+# 删除容器
 docker rm <container-id>
 
-# Remove all stopped containers
+# 删除所有已停止的容器
 docker container prune
 ```
 
 
-## Image Management
+## 镜像管理
 
-### Building Images
+### 构建镜像
 ```bash
-# Build from Dockerfile in current directory
+# 基于当前目录的 Dockerfile 构建
 docker build -t <image-name>:<tag> .
 
-# Build with specific Dockerfile
+# 指定 Dockerfile 构建
 docker build -f Dockerfile.prod -t myapp:prod .
 
-# Build with build arguments
+# 使用构建参数构建
 docker build --build-arg VERSION=1.0 -t myapp:1.0 .
 
-# Build with no cache
+# 不使用缓存构建
 docker build --no-cache -t myapp:latest .
 ```
 
-### Tagging Images
+### 标记镜像
 ```bash
-# Tag an image
+# 标记镜像
 docker tag <image-id> <repository>:<tag>
 docker tag myapp:latest myuser/myapp:v1.0
 
-# Push to registry
+# 推送到镜像仓库
 docker push myuser/myapp:v1.0
 
-# Pull specific tag
+# 拉取指定标签
 docker pull myuser/myapp:v1.0
 ```
 
-### Inspecting Images
+### 查看镜像信息
 ```bash
-# Display detailed information
+# 显示详细信息
 docker inspect <image-id>
 
-# View image history
+# 查看镜像历史
 docker history <image-id>
 
-# Check image size
+# 查看镜像大小
 docker images --format "{{.Repository}}:{{.Tag}} - {{.Size}}"
 ```
 
 
-## Container Management
+## 容器管理
 
-### Running Containers
+### 运行容器
 
-#### Basic Run
+#### 基础运行
 ```bash
-# Run container with name
+# 指定名称运行容器
 docker run --name my-container nginx
 
-# Run with port mapping
+# 带端口映射运行
 docker run -p 8080:80 nginx
 
-# Run with environment variables
+# 带环境变量运行
 docker run -e "ENV=production" -e "DEBUG=false" myapp
 
-# Run with volume mount
+# 带卷挂载运行
 docker run -v /host/path:/container/path myapp
 
-# Run with resource limits
+# 带资源限制运行
 docker run --memory="256m" --cpus="1.0" myapp
 ```
 
-#### Advanced Options
+#### 高级选项
 ```bash
-# Run with restart policy
+# 带重启策略运行
 docker run --restart=always nginx
-docker run --restart=on-failure:3 myapp  # restart max 3 times
+docker run --restart=on-failure:3 myapp  # 最多重启 3 次
 
-# Run with custom network
+# 使用自定义网络运行
 docker run --network my-network myapp
 
-# Run as specific user
+# 以指定用户身份运行
 docker run --user 1000:1000 myapp
 
-# Run with working directory
+# 指定工作目录运行
 docker run -w /app myapp
 
-# Run with custom hostname
+# 指定主机名运行
 docker run --hostname my-host myapp
 ```
 
-### Container Operations
+### 容器操作
 ```bash
-# Execute command in running container
+# 在运行中的容器内执行命令
 docker exec <container-id> <command>
-docker exec -it <container-id> bash  # interactive bash
+docker exec -it <container-id> bash  # 交互式 bash
 
-# View logs
+# 查看日志
 docker logs <container-id>
-docker logs -f <container-id>  # follow logs
-docker logs --tail 100 <container-id>  # last 100 lines
+docker logs -f <container-id>  # 实时跟踪日志
+docker logs --tail 100 <container-id>  # 最后 100 行
 
-# View container processes
+# 查看容器进程
 docker top <container-id>
 
-# View container resource usage
+# 查看容器资源占用
 docker stats
 docker stats <container-id>
 
-# Copy files to/from container
+# 在容器与主机之间复制文件
 docker cp <container-id>:/path/in/container /local/path
 docker cp /local/path <container-id>:/path/in/container
 
-# Inspect container
+# 查看容器详情
 docker inspect <container-id>
 ```
 
-### Container Lifecycle
+### 容器生命周期
 ```bash
-# Stop container gracefully (SIGTERM then SIGKILL)
+# 优雅停止容器（先 SIGTERM 后 SIGKILL）
 docker stop <container-id>
 
-# Force stop (SIGKILL immediately)
+# 强制停止（立即 SIGKILL）
 docker kill <container-id>
 
-# Pause container
+# 暂停容器
 docker pause <container-id>
 
-# Unpause container
+# 恢复容器
 docker unpause <container-id>
 
-# Restart container
+# 重启容器
 docker restart <container-id>
 
-# Rename container
+# 重命名容器
 docker rename <old-name> <new-name>
 ```
 
 
-## Dockerfile Syntax
+## Dockerfile 语法
 
-### Basic Structure
+### 基本结构
 ```dockerfile
-# Base image
+# 基础镜像
 FROM python:3.9-slim
 
-# Metadata
+# 元数据
 LABEL maintainer="you@example.com"
 LABEL version="1.0"
 
-# Set working directory
+# 设置工作目录
 WORKDIR /app
 
-# Copy files
+# 复制文件
 COPY requirements.txt .
 COPY . .
 
-# Run commands
+# 执行命令
 RUN apt-get update && apt-get install -y \
     package1 \
     package2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# 安装 Python 依赖
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set environment variables
+# 设置环境变量
 ENV PYTHONUNBUFFERED=1 \
     ENVIRONMENT=production
 
-# Expose port
+# 暴露端口
 EXPOSE 8000
 
-# Create non-root user
+# 创建非 root 用户
 RUN useradd -m -u 1000 appuser && chown -R appuser /app
 USER appuser
 
-# Define entrypoint and command
+# 定义入口点与命令
 ENTRYPOINT ["python"]
 CMD ["app.py"]
 ```
 
-### Multi-Stage Builds
+### 多阶段构建
 ```dockerfile
-# Build stage
+# 构建阶段
 FROM python:3.9 AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
-# Runtime stage
+# 运行阶段
 FROM python:3.9-slim
 WORKDIR /app
 COPY --from=builder /root/.local /root/.local
@@ -264,71 +264,71 @@ ENV PATH=/root/.local/bin:$PATH
 CMD ["python", "app.py"]
 ```
 
-### Common Instructions
+### 常用指令
 ```dockerfile
-# ARG - Build-time variables
+# ARG - 构建时变量
 ARG VERSION=1.0
 ARG BUILD_DATE
 
-# ENV - Environment variables
+# ENV - 环境变量
 ENV APP_HOME=/app \
     PORT=8000
 
-# VOLUME - Mount point
+# VOLUME - 挂载点
 VOLUME ["/data"]
 
 # HEALTHCHECK
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD curl -f http://localhost:8000/health || exit 1
 
-# ONBUILD - Trigger for child images
+# ONBUILD - 子镜像的触发指令
 ONBUILD COPY . /app
 ```
 
 
 ## Docker Compose
 
-### Basic Commands
+### 基础命令
 ```bash
-# Start services
+# 启动服务
 docker compose up
-docker compose up -d  # detached mode
+docker compose up -d  # 分离模式
 
-# Start specific services
+# 启动指定服务
 docker compose up service1 service2
 
-# Stop services
+# 停止服务
 docker compose stop
 
-# Stop and remove containers, networks
+# 停止并删除容器、网络
 docker compose down
 
-# Stop and remove everything including volumes
+# 停止并删除所有内容（包括卷）
 docker compose down -v
 
-# View logs
+# 查看日志
 docker compose logs
-docker compose logs -f  # follow
-docker compose logs service1  # specific service
+docker compose logs -f  # 实时跟踪
+docker compose logs service1  # 指定服务
 
-# List services
+# 列出服务
 docker compose ps
 
-# Execute command in service
+# 在服务中执行命令
 docker compose exec service1 bash
 
-# Build or rebuild services
+# 构建或重建服务
 docker compose build
 docker compose build --no-cache
 
-# Pull service images
+# 拉取服务镜像
 docker compose pull
 
-# Validate compose.yaml
+# 校验 compose.yaml
 docker compose config
 ```
 
-### Compose YAML Structure
+### Compose YAML 结构
 ```yaml
 services:
   web:
@@ -393,71 +393,71 @@ networks:
 ```
 
 
-## Networking
+## 网络
 
-### Network Commands
+### 网络命令
 ```bash
-# List networks
+# 列出网络
 docker network ls
 
-# Create network
+# 创建网络
 docker network create my-network
 docker network create --driver bridge my-bridge
 
-# Inspect network
+# 查看网络详情
 docker network inspect my-network
 
-# Connect container to network
+# 将容器连接到网络
 docker network connect my-network <container-id>
 
-# Disconnect container from network
+# 断开容器与网络的连接
 docker network disconnect my-network <container-id>
 
-# Remove network
+# 删除网络
 docker network rm my-network
 
-# Remove unused networks
+# 删除未使用的网络
 docker network prune
 ```
 
-### Network Drivers
-- **bridge**: Default, isolated network on a single host
-- **host**: Remove network isolation, use host's network
-- **overlay**: Multi-host networking (Swarm)
-- **macvlan**: Assign MAC address to container
-- **none**: Disable networking
+### 网络驱动
+- **bridge**：默认模式，单主机上的隔离网络
+- **host**：取消网络隔离，使用宿主机网络
+- **overlay**：多主机网络（Swarm）
+- **macvlan**：为容器分配 MAC 地址
+- **none**：禁用网络
 
-### DNS Resolution
+### DNS 解析
 ```bash
-# Containers can reach each other by name on custom networks
+# 在自定义网络上，容器可通过名称互相访问
 docker run --network my-network --name web nginx
 docker run --network my-network alpine ping web
 ```
 
 
-## Volumes
+## 卷
 
-### Volume Commands
+### 卷命令
 ```bash
-# List volumes
+# 列出卷
 docker volume ls
 
-# Create volume
+# 创建卷
 docker volume create my-volume
 
-# Inspect volume
+# 查看卷详情
 docker volume inspect my-volume
 
-# Remove volume
+# 删除卷
 docker volume rm my-volume
 
-# Remove unused volumes
+# 删除未使用的卷
 docker volume prune
 ```
 
-### Volume Types
+### 卷类型
 
-#### Named Volumes
+#### 具名卷
 ```bash
 docker run -v my-volume:/data alpine
 ```
@@ -471,7 +471,7 @@ volumes:
   my-volume:
 ```
 
-#### Bind Mounts
+#### 绑定挂载
 ```bash
 docker run -v /host/path:/container/path alpine
 ```
@@ -483,96 +483,96 @@ services:
       - ./local:/app
 ```
 
-#### Anonymous Volumes
+#### 匿名卷
 ```bash
 docker run -v /data alpine
 ```
 
 
-## Troubleshooting
+## 故障排查
 
-### Debugging Containers
+### 调试容器
 
-#### Container Won't Start
+#### 容器无法启动
 ```bash
-# Check logs
+# 查看日志
 docker logs <container-id>
 
-# Inspect container configuration
+# 查看容器配置
 docker inspect <container-id>
 
-# Try running interactively
+# 尝试以交互方式运行
 docker run -it <image> bash
 
-# Check if port is already in use
+# 检查端口是否已被占用
 netstat -tulpn | grep <port>
 ```
 
-#### Container Exits Immediately
+#### 容器立即退出
 ```bash
-# Check exit code
+# 检查退出码
 docker ps -a
 docker inspect <container-id> | grep ExitCode
 
-# Common exit codes:
-# 0 - Success
-# 1 - Application error
-# 137 - SIGKILL (killed by system)
-# 139 - Segmentation fault
-# 143 - SIGTERM (graceful shutdown)
+# 常见退出码：
+# 0 - 成功
+# 1 - 应用错误
+# 137 - SIGKILL（被系统杀死）
+# 139 - 段错误
+# 143 - SIGTERM（优雅退出）
 ```
 
-#### Network Issues
+#### 网络问题
 ```bash
-# Check container networking
+# 检查容器网络
 docker exec <container-id> ping google.com
 docker exec <container-id> nslookup google.com
 
-# Check exposed ports
+# 检查已暴露的端口
 docker port <container-id>
 
-# Inspect network
+# 查看网络详情
 docker network inspect <network-name>
 ```
 
-#### Performance Issues
+#### 性能问题
 ```bash
-# Check resource usage
+# 检查资源占用
 docker stats <container-id>
 
-# Check disk usage
+# 检查磁盘占用
 docker system df
 
-# Check logs size
+# 查看日志大小
 docker inspect -f '{{.LogPath}}' <container-id>
-# then: ls -lh /path/to/log
+# 然后执行 ls -lh /path/to/log
 ```
 
-### Common Issues
+### 常见问题
 
-**Issue**: "Permission denied"
+**问题**："Permission denied"（权限被拒绝）
 ```bash
-# Solution 1: Run as root (not recommended)
+# 方案 1：以 root 运行（不推荐）
 docker run --user root <image>
 
-# Solution 2: Fix ownership in Dockerfile
+# 方案 2：在 Dockerfile 中修正所有者
 RUN chown -R appuser:appuser /app
 USER appuser
 ```
 
-**Issue**: "Cannot connect to Docker daemon"
+**问题**："Cannot connect to Docker daemon"（无法连接 Docker 守护进程）
 ```bash
-# Solution: Start Docker service
+# 方案：启动 Docker 服务
 sudo systemctl start docker
 
-# Or add user to docker group
+# 或者把用户加入 docker 组
 sudo usermod -aG docker $USER
-# Log out and back in
+# 注销后重新登录
 ```
 
-**Issue**: "No space left on device"
+**问题**："No space left on device"（磁盘空间不足）
 ```bash
-# Clean up
+# 清理
 docker system prune -a --volumes
 ```
 
@@ -581,48 +581,48 @@ docker system prune -a --volumes
 :::
 
 
-## Best Practices
+## 最佳实践
 
-### Dockerfile Best Practices
+### Dockerfile 最佳实践
 
-1. **Use specific base image tags**
+1. **使用具体的基础镜像标签**
    ```dockerfile
-   # Good
+   # 推荐
    FROM python:3.9-slim
 
-   # Avoid
+   # 避免
    FROM python:latest
    ```
 
-2. **Minimize layers**
+2. **尽量减少层数**
    ```dockerfile
-   # Good
+   # 推荐
    RUN apt-get update && apt-get install -y \
        package1 \
        package2 \
        && rm -rf /var/lib/apt/lists/*
 
-   # Avoid
+   # 避免
    RUN apt-get update
    RUN apt-get install -y package1
    RUN apt-get install -y package2
    ```
 
-3. **Order instructions by change frequency**
+3. **按变更频率排序指令**
    ```dockerfile
-   # Rarely changes
+   # 很少变动
    FROM python:3.9-slim
    RUN apt-get update && apt-get install -y gcc
 
-   # Sometimes changes
+   # 有时变动
    COPY requirements.txt .
    RUN pip install -r requirements.txt
 
-   # Frequently changes
+   # 频繁变动
    COPY . .
    ```
 
-4. **Use .dockerignore**
+4. **使用 .dockerignore**
    ```
    .git
    .env
@@ -632,101 +632,101 @@ docker system prune -a --volumes
    .venv
    ```
 
-5. **Don't run as root**
+5. **不要以 root 运行**
    ```dockerfile
    RUN useradd -m -u 1000 appuser
    USER appuser
    ```
 
-6. **Use COPY instead of ADD**
+6. **用 COPY 代替 ADD**
    ```dockerfile
-   # Preferred
+   # 首选
    COPY requirements.txt .
 
-   # Only for tar extraction or URLs
+   # 仅用于解压 tar 或获取 URL
    ADD archive.tar.gz /app
    ```
 
-### Container Best Practices
+### 容器最佳实践
 
-1. **One process per container**
-2. **Use environment variables for configuration**
-3. **Implement health checks**
-4. **Use restart policies appropriately**
-5. **Tag images with semantic versioning**
-6. **Keep containers ephemeral**
-7. **Don't store data in containers (use volumes)**
+1. **每个容器只运行一个进程**
+2. **用环境变量进行配置**
+3. **实现健康检查**
+4. **合理使用重启策略**
+5. **使用语义化版本给镜像打标签**
+6. **让容器保持临时性（可随时丢弃）**
+7. **不要把数据存在容器里（使用卷）**
 
-### Security Best Practices
+### 安全最佳实践
 
-1. **Scan images for vulnerabilities**
+1. **扫描镜像漏洞**
    ```bash
    docker scout cves <image>
    ```
 
-2. **Don't include secrets in images**
-3. **Use secrets management**
-4. **Keep base images updated**
-5. **Limit container capabilities**
+2. **不要在镜像中包含密钥**
+3. **使用密钥管理**
+4. **保持基础镜像更新**
+5. **限制容器能力**
    ```bash
    docker run --cap-drop ALL --cap-add NET_BIND_SERVICE myapp
    ```
 
 
-## Quick Reference
+## 快速参考
 
-### Most Used Commands
+### 最常用命令
 ```bash
-# Build and run
+# 构建并运行
 docker build -t myapp .
 docker run -d -p 8000:8000 --name myapp-container myapp
 
-# View and debug
+# 查看与调试
 docker ps
 docker logs -f myapp-container
 docker exec -it myapp-container bash
 
-# Clean up
+# 清理
 docker stop myapp-container
 docker rm myapp-container
 docker rmi myapp
 docker system prune -a
 ```
 
-### Resource Limits
+### 资源限制
 ```bash
-# Memory limit
+# 内存限制
 docker run -m 512m myapp
 
-# CPU limit
+# CPU 限制
 docker run --cpus="1.5" myapp
 
-# Both
+# 同时限制
 docker run -m 512m --cpus="1.5" myapp
 ```
 
-### Docker Compose Quick Start
+### Docker Compose 快速上手
 ```bash
-# Start everything
+# 启动全部服务
 docker compose up -d
 
-# View logs
+# 查看日志
 docker compose logs -f
 
-# Rebuild and restart
+# 重新构建并重启
 docker compose up -d --build
 
-# Stop everything
+# 停止全部服务
 docker compose down
 
-# Stop and remove volumes
+# 停止并删除卷
 docker compose down -v
 ```
 
 
-## Useful Aliases
+## 常用别名
 
-Add these to your `~/.bashrc` or `~/.zshrc`:
+将以下内容添加到 `~/.bashrc` 或 `~/.zshrc`：
 
 ```bash
 # Docker
@@ -748,16 +748,16 @@ alias dcl='docker compose logs -f'
 alias dce='docker compose exec'
 alias dcb='docker compose build'
 
-# Cleanup
+# 清理
 alias docker-clean='docker system prune -a --volumes'
 ```
 
 
-## Additional Resources
+## 其他资源
 
-- [Official Docker Documentation](https://docs.docker.com/)
+- [Docker 官方文档](https://docs.docker.com/)
 - [Docker Hub](https://hub.docker.com/)
 - [Play with Docker](https://labs.play-with-docker.com/)
-- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
+- [Docker 最佳实践](https://docs.docker.com/develop/dev-best-practices/)
 
 

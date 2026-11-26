@@ -1,5 +1,6 @@
 ---
-title: 速查表
+title: 全部速查
+autoTitle: false
 pagefind-indexed: false
 ---
 
