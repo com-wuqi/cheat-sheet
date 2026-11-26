@@ -3,22 +3,22 @@ layout: home
 pagefind-indexed: false
 
 hero:
-  name: 速查表
-  text: 个人速查手册
-  tagline: 用 Markdown 记录常用命令、配置与速查片段
+  name: 文档
+  text: 文档与速查
+  tagline: 整理项目文档、使用指南与常用命令速查
   actions:
     - theme: brand
-      text: 浏览速查表
-      link: /cheat-sheets/
+      text: 开始阅读
+      link: /guide/
     - theme: alt
-      text: Git 速查
-      link: /cheat-sheets/dev/git
+      text: 速查表
+      link: /cheat-sheets/
 
 features:
-  - title: 按主题分组
-    details: 命令行、开发工具、编程语言和实用工具，Markdown 文件即内容。
-  - title: 自动导航
-    details: 侧边栏与索引页自动生成，无需逐页登记。
+  - title: 文档
+    details: 项目说明、使用指南与维护约定。
+  - title: 速查表
+    details: 命令行、开发工具、编程语言和实用工具的高频命令。
   - title: 本地搜索
     details: 构建后提供离线全文搜索，支持中文。
 ---

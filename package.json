@@ -12,6 +12,7 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "check:links": "node scripts/check-links.mjs",
+    "check:search": "node scripts/check-search.mjs",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {

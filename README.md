@@ -1,6 +1,6 @@
-# 速查表
+# 文档
 
-基于 [VitePress](https://vitepress.dev/) + [Teek](https://github.com/teekhub/vitepress-theme-teek) 主题的个人速查站点。内容按主题分组，侧边栏、索引页和搜索结果会自动更新。
+基于 [VitePress](https://vitepress.dev/) + [Teek](https://github.com/teekhub/vitepress-theme-teek) 主题的文档与速查站点。内容分为「文档」和「速查表」两个分区，侧边栏、索引页和搜索结果会自动更新。
 
 ## 环境要求
 
@@ -19,37 +19,43 @@ npm run docs:dev
 ## 内容结构
 
 ```text
-docs/cheat-sheets/
-├─ index.md                 # 自动索引页
-├─ shell/                   # 命令行
-│  ├─ index.md
-│  ├─ bash.md
-│  └─ linux.md
-├─ dev/                     # 开发工具
-│  ├─ index.md
-│  ├─ git.md
-│  ├─ docker.md
-│  └─ kubernetes.md
-├─ languages/               # 编程语言
-│  ├─ index.md
-│  ├─ python.md
-│  ├─ go.md
-│  └─ sql.md
-└─ tools/                   # 实用工具
-   ├─ index.md
-   ├─ vim.md
-   ├─ ffmpeg.md
-   └─ adb.md
+docs/
+├─ index.md                 # 首页
+├─ guide/                   # 文档分区
+│  └─ index.md              # 文档入口
+└─ cheat-sheets/            # 速查表分区
+   ├─ index.md              # 自动索引页
+   ├─ shell/                # 命令行
+   │  ├─ index.md
+   │  ├─ bash.md
+   │  └─ linux.md
+   ├─ dev/                  # 开发工具
+   │  ├─ index.md
+   │  ├─ git.md
+   │  ├─ docker.md
+   │  └─ kubernetes.md
+   ├─ languages/            # 编程语言
+   │  ├─ index.md
+   │  ├─ python.md
+   │  ├─ go.md
+   │  └─ sql.md
+   └─ tools/                # 实用工具
+      ├─ index.md
+      ├─ vim.md
+      ├─ ffmpeg.md
+      └─ adb.md
 ```
 
+- 顶部导航分为「文档」和「速查表」两个分区：`docs/guide/` 放项目文档，`docs/cheat-sheets/` 放速查表。
 - 分组目录的 `index.md` 只提供侧边栏分组标题和简介；Teek 的 `ignoreIndexMd` 会把它排除在侧边栏条目之外，`pagefind-indexed: false` 则让它不进入搜索结果。
 - 除命令、代码、配置键、专有名词和外部链接外，正文统一使用中文。
 - `docs-raw/` 是本地原始素材，已加入 `.gitignore`，不参与构建。
 
-## 添加速查
+## 添加内容
 
-1. 在对应的主题目录下新建 `.md` 文件，或在 `docs/cheat-sheets/` 下新建主题目录。
-2. 添加可选的 frontmatter：
+1. 文档：在 `docs/guide/` 下新建 `.md` 文件。
+2. 速查表：在 `docs/cheat-sheets/` 的对应主题目录下新建 `.md` 文件，或新建主题目录。
+3. 添加可选的 frontmatter：
 
 ```md
 ---
@@ -83,15 +89,18 @@ npm run docs:build
 npm run docs:preview
 ```
 
-构建产物在 `docs/.vitepress/dist`。构建后可以检查内部链接和静态资源：
+构建产物在 `docs/.vitepress/dist`。构建后可以检查内部链接、静态资源和搜索排序：
 
 ```bash
 npm run check:links
+npm run check:search
 ```
 
 ## 搜索
 
 搜索使用 [Pagefind](https://pagefind.app/)（`vitepress-plugin-pagefind`），离线运行，支持中文。
+
+多词查询会优先展示包含全部关键词的小节。例如搜索 `git clone` 会定位到 Git 页面的「初始化与克隆」，而不是页面标题。该行为由 `docs/.vitepress/pagefind-search.mjs` 通过插件的 `pageResultCount`、`filter` 和 `customSearchQuery` 配置实现，不修改插件源码。
 
 注意：Pagefind 索引只在 `docs:build` 时生成，`npm run docs:dev` 下搜索不可用。要验证搜索，请先构建再预览：
 
@@ -99,6 +108,8 @@ npm run check:links
 npm run docs:build
 npm run docs:preview
 ```
+
+构建后也可以直接运行 `npm run check:search` 验证排序（例如 `git clone` 应定位到「初始化与克隆」）。升级 `vitepress-plugin-pagefind` 后建议重新运行该检查；`pagefind-search.mjs` 中的函数会被序列化到浏览器端，需保持自包含。
 
 ## 界面语言
 

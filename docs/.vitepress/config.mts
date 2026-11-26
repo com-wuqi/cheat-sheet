@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
-import { chineseSearchOptimize, pagefindPlugin } from 'vitepress-plugin-pagefind'
+import { pagefindPlugin } from 'vitepress-plugin-pagefind'
 import { defineTeekConfig } from 'vitepress-theme-teek/config'
+import { customSearchQuery, filter, searchResultPageCount } from './pagefind-search.mjs'
 
 const teekConfig = defineTeekConfig({
   teekHome: false,
@@ -14,12 +15,30 @@ const teekConfig = defineTeekConfig({
       ignoreIndexMd: true,
       titleFormMd: true,
       initItemsText: true,
+      ignoreWarn: true,
       sidebarResolved: (sidebar) => {
         if (Array.isArray(sidebar)) return sidebar
-        const items = sidebar['/cheat-sheets/']
-        if (Array.isArray(items) && items.length === 1 && items[0]?.text === 'cheat-sheets') {
-          sidebar['/cheat-sheets/'] = items[0].items ?? []
+
+        const sectionTitles: Record<string, string> = {
+          '/cheat-sheets/': '速查表',
+          '/guide/': '文档'
         }
+
+        for (const [key, title] of Object.entries(sectionTitles)) {
+          const list = sidebar[key]
+          if (!Array.isArray(list)) continue
+
+          const wrapper = list.length === 1 && list[0]?.items ? list[0] : undefined
+          const groups = wrapper ? (wrapper.items ?? []) : list
+
+          if (!groups.length) {
+            delete sidebar[key]
+            continue
+          }
+
+          sidebar[key] = [{ text: title, link: key, items: groups }]
+        }
+
         return sidebar
       }
     }
@@ -29,19 +48,24 @@ const teekConfig = defineTeekConfig({
 export default defineConfig({
   extends: teekConfig,
   lang: 'zh-CN',
-  title: '速查表',
-  description: '个人速查手册',
+  title: '文档',
+  description: '文档与速查',
   cleanUrls: true,
   lastUpdated: true,
   vite: {
     plugins: [
       pagefindPlugin({
         forceLanguage: 'zh-cn',
-        customSearchQuery: chineseSearchOptimize
+        customSearchQuery,
+        filter,
+        pageResultCount: searchResultPageCount
       })
     ]
   },
   themeConfig: {
-    nav: [{ text: '速查表', link: '/cheat-sheets/' }]
+    nav: [
+      { text: '文档', link: '/guide/', activeMatch: '^/guide/' },
+      { text: '速查表', link: '/cheat-sheets/', activeMatch: '^/cheat-sheets/' }
+    ]
   }
 })
