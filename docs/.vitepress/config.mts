@@ -11,7 +11,17 @@ const teekConfig = defineTeekConfig({
   },
   vitePlugins: {
     sidebarOption: {
-      ignoreIndexMd: true
+      ignoreIndexMd: true,
+      titleFormMd: true,
+      initItemsText: true,
+      sidebarResolved: (sidebar) => {
+        if (Array.isArray(sidebar)) return sidebar
+        const items = sidebar['/cheat-sheets/']
+        if (Array.isArray(items) && items.length === 1 && items[0]?.text === 'cheat-sheets') {
+          sidebar['/cheat-sheets/'] = items[0].items ?? []
+        }
+        return sidebar
+      }
     }
   }
 })

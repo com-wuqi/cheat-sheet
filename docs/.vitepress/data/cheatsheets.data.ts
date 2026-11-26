@@ -21,7 +21,7 @@ export default createContentLoader('cheat-sheets/**/*.md', {
   includeSrc: true,
   transform(raw): CheatSheet[] {
     return raw
-      .filter((page) => page.url !== '/cheat-sheets/')
+      .filter((page) => page.url !== '/cheat-sheets/' && !page.url.endsWith('/'))
       .map((page) => {
         const src = page.src ?? ''
         const meta = { ...readFrontmatter(src), ...page.frontmatter }

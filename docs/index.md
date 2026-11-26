@@ -11,12 +11,12 @@ hero:
       text: 浏览速查表
       link: /cheat-sheets/
     - theme: alt
-      text: 写作示例
-      link: /cheat-sheets/example
+      text: Git 速查
+      link: /cheat-sheets/dev/git
 
 features:
-  - title: Markdown 即内容
-    details: 把 .md 文件放进 docs/cheat-sheets/ 即可发布。
+  - title: 按主题分组
+    details: 命令行、开发工具、编程语言和实用工具，Markdown 文件即内容。
   - title: 自动导航
     details: 侧边栏与索引页自动生成，无需逐页登记。
   - title: 本地搜索
